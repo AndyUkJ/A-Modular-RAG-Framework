@@ -1,0 +1,30 @@
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405829.954957, "event": "run_start", "node": null, "status": "running", "payload": {"question": "Were Scott Derrickson and Ed Wood of the same nationality?", "mode": "full"}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405829.978265, "event": "node_start", "node": "InitExternal", "status": "running", "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405830.2613492, "event": "node_end", "node": "InitExternal", "status": "ok", "duration_sec": 0.2830841541290283, "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405830.263049, "event": "node_start", "node": "Ingest", "status": "running", "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405830.263326, "event": "node_end", "node": "Ingest", "status": "ok", "duration_sec": 0.0002770423889160156, "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405830.264224, "event": "node_start", "node": "BuildGraph", "status": "running", "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405830.268568, "event": "node_start", "node": "GC/BuildNodes", "status": "running", "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405830.27096, "event": "node_end", "node": "GC/BuildNodes", "status": "ok", "duration_sec": 0.0023920536041259766, "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405830.2717881, "event": "node_start", "node": "GC/BuildEdges", "status": "running", "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405830.275744, "event": "node_end", "node": "GC/BuildEdges", "status": "ok", "duration_sec": 0.003955841064453125, "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405830.276791, "event": "node_start", "node": "GC/AssembleSave", "status": "running", "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405830.298931, "event": "node_end", "node": "GC/AssembleSave", "status": "ok", "duration_sec": 0.022139787673950195, "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405830.3004491, "event": "node_end", "node": "BuildGraph", "status": "ok", "duration_sec": 0.036225080490112305, "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405830.3013608, "event": "node_start", "node": "ChooseRoute", "status": "running", "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405830.301573, "event": "node_end", "node": "ChooseRoute", "status": "ok", "duration_sec": 0.00021219253540039062, "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405830.3028321, "event": "node_start", "node": "Retrieval", "status": "running", "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405830.303105, "event": "node_start", "node": "RetrievalAdapter/backend", "status": "running", "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405830.303474, "event": "node_start", "node": "Backend/Expand", "status": "running", "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405833.770815, "event": "llm_call", "node": null, "status": "ok", "payload": {"llm": {"provider": "openai", "model": "gpt-4o-mini", "tokens_in": 0, "tokens_out": 0, "latency_ms": 3466.7229652404785, "cached": false, "temperature": 0.2, "max_tokens": null, "module": "RetrievalAgent", "purpose": "query_expand", "error": null, "request_id": null}}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405833.7716181, "event": "node_end", "node": "Backend/Expand", "status": "ok", "duration_sec": 3.468144178390503, "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405833.771989, "event": "node_start", "node": "Backend/TextSearch", "status": "running", "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405834.116151, "event": "node_end", "node": "Backend/TextSearch", "status": "ok", "duration_sec": 0.3441619873046875, "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405834.1164968, "event": "node_start", "node": "Backend/GraphExpand", "status": "running", "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405834.118386, "event": "node_end", "node": "Backend/GraphExpand", "status": "ok", "duration_sec": 0.0018892288208007812, "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405834.118804, "event": "node_end", "node": "RetrievalAdapter/backend", "status": "ok", "duration_sec": 3.8156988620758057, "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405834.119057, "event": "node_end", "node": "Retrieval", "status": "ok", "duration_sec": 3.8162248134613037, "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405834.120076, "event": "node_start", "node": "Reasoning", "status": "running", "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405834.120397, "event": "node_start", "node": "ReasoningAdapter", "status": "running", "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405834.1206012, "event": "error", "node": "ReasoningAdapter", "status": "error", "duration_sec": 0.0002040863037109375, "error": "AttributeError(\"'ReasoningAgentPlannerSynth' object has no attribute 'reason'\")", "payload": {}}
+{"trace_id": "trace-20250921-060349-68435426", "ts": 1758405834.120851, "event": "error", "node": "Reasoning", "status": "error", "duration_sec": 0.0007750988006591797, "error": "AttributeError(\"'ReasoningAgentPlannerSynth' object has no attribute 'reason'\")", "payload": {}}

@@ -1,0 +1,9 @@
+{"trace_id": "trace-20250921-005823-78119874", "ts": 1758387503.22624, "event": "run_start", "node": null, "status": "running", "payload": {"question": "Were Scott Derrickson and Ed Wood of the same nationality?", "mode": "full"}}
+{"trace_id": "trace-20250921-005823-78119874", "ts": 1758387503.245538, "event": "node_start", "node": "InitExternal", "status": "running", "payload": {}}
+{"trace_id": "trace-20250921-005823-78119874", "ts": 1758387503.5951831, "event": "node_end", "node": "InitExternal", "status": "ok", "duration_sec": 0.34964513778686523, "payload": {}}
+{"trace_id": "trace-20250921-005823-78119874", "ts": 1758387503.597467, "event": "node_start", "node": "Ingest", "status": "running", "payload": {}}
+{"trace_id": "trace-20250921-005823-78119874", "ts": 1758387503.597889, "event": "node_end", "node": "Ingest", "status": "ok", "duration_sec": 0.0004220008850097656, "payload": {}}
+{"trace_id": "trace-20250921-005823-78119874", "ts": 1758387503.599135, "event": "node_start", "node": "BuildGraph", "status": "running", "payload": {}}
+{"trace_id": "trace-20250921-005823-78119874", "ts": 1758387503.6090481, "event": "node_start", "node": "GC/BuildNodes", "status": "running", "payload": {}}
+{"trace_id": "trace-20250921-005823-78119874", "ts": 1758387503.6099951, "event": "error", "node": "GC/BuildNodes", "status": "error", "duration_sec": 0.0009469985961914062, "error": "TypeError(\"segment_context() got an unexpected keyword argument 'embed_fn'\")", "payload": {}}
+{"trace_id": "trace-20250921-005823-78119874", "ts": 1758387503.6110458, "event": "error", "node": "BuildGraph", "status": "error", "duration_sec": 0.01191091537475586, "error": "TypeError(\"segment_context() got an unexpected keyword argument 'embed_fn'\")", "payload": {}}

@@ -1,0 +1,6 @@
+from __future__ import annotations
+from typing import List, Dict, Any, Protocol
+
+class LLMProvider(Protocol):
+    def complete(self, prompt: str, *, temperature: float = 0.2, max_tokens: int = 512, **kw) -> Dict[str, Any]: ...
+    def embed(self, texts: List[str], **kw) -> Dict[str, Any]: ...

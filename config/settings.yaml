@@ -1,0 +1,163 @@
+# ========== Providers ==========
+providers:
+  openai:
+    type: "app.core.providers.openai_provider:OpenAIProvider"
+    kwargs:
+      api_key: "OPENAI_API_KEY"
+      model_default: "gpt-4o-mini"
+      embed_model: "text-embedding-3-large"
+      proxy: "http://127.0.0.1:7890"
+
+# ========== LLM Routing Policy ==========
+llm_policy:
+  default:
+    - { model: gpt-4o-mini, provider: openai, ctx: 16000, price: 0.2 }
+
+  embedding_provider: openai
+
+  embedding:
+  - { model: text-embedding-3-large, provider: openai, ctx: 8192, price: 0.05 }
+
+  routes:
+    GraphConstruction:
+      alias_resolve:
+        - { model: gpt-4o-mini, provider: openai, ctx: 16000, price: 0.2 }
+
+    RetrievalAgent:
+      query_expand:
+        - { model: gpt-4o-mini, provider: openai, ctx: 16000, price: 0.2 }
+
+    ReasoningAgent:
+      plan:
+        - { model: gpt-4o-mini, provider: openai, ctx: 16000, price: 0.2 }
+      synthesize:
+        - { model: gpt-4o-mini, provider: openai, ctx: 16000, price: 0.2 }
+
+    VerifierAgent:
+      factcheck:
+        - { model: gpt-4o-mini, provider: openai, ctx: 16000, price: 0.2 }
+
+# ========== Dataset ==========
+dataset:
+  type: hotpotqa
+  path: "data/hotpotqa/hotpot_dev_distractor_v1.json"
+  index: 0
+  count: 1
+
+# ========== Modules ==========
+modules:
+  graph_construction:
+    type: "app.modules.graph_construction.flow:GraphConstructionFlow"
+    kwargs: {}
+    impl: "app.modules.graph_construction.impl_networkx:GraphConstructionNetworkX"
+    impl_kwargs:
+      root_dir: "data/graph"
+      node_builder:
+        enable_segmentation: true #（默认开启 G1 语义切分）
+        segmentation_strategy: "rule" #（默认 rule，可切换 embed）
+        segmentation_sim_threshold: 0.65 #（相邻句合并阈值）
+        use_entity_nodes: true # （默认开启 G3 实体节点）
+        use_doc_nodes: true
+      edge_builder:
+        use_adjacency: true # （文档内相邻边）
+        use_qmatch: true #（Q→句匹配边）
+        use_doc_edges: true # （句子→文档边）
+        use_semantic_edges: true #true #（默认开启 G2 语义边）
+        semantic_threshold: 0.9
+        use_entity_edges: true #true #（默认开启 G3 实体边）
+        record_evidence: true #（默认开启 G4 证据记录）
+        assembly_policy: #（新增 G4 投票融合策略）
+          channels:
+            q_overlap: 1.0
+            embed_sim: 1.0
+            entity_link: 0.6
+            position_prior: 0.2
+          edge_min_vote: 0 # 0.6
+          max_edges_per_node: 0 # 64
+
+  retrieval:
+    type: "app.modules.retrieval.flow:RetrievalAgentFlow"
+    kwargs:
+      id_keys:    ["id","doc_id","docId","sid","sent_id"]
+      score_keys: ["score","relevance","sim","s"]
+    impl: "app.modules.retrieval.retrieval_backend:HybridRetrievalBackend"
+    impl_kwargs:
+      index_path: "data/hotpotqa/docs.jsonl"
+      graph_root: "data/graph"
+
+      # —— 图邻域 —— 
+      graph_window: 1        # 默认窗口
+      # 可以在 req.graph_window 覆盖，用于实验多跳
+
+      # —— 融合权重 —— 
+      alpha_text: 0.4
+      alpha_graph: 0.2
+      alpha_dense: 0.4
+      
+       # —— 返回条数 —— 
+      default_top_k: 30      # 没有 req.top_k 时的默认值
+
+      # —— 文本检索池 —— 
+      bm25_pool_k: 200       # BM25 先拉候选，用于 Dense 重排
+      dense_pool_k: 200      # DenseReranker 的 max_pool，与上保持一致
+
+      # —— Query 扩展（增强属性/关系同义改写） ——
+      qe_lines: 3
+      qe_attr_paraphrase: true
+
+      dense_pool_k: 200   # 对应 DenseReranker(max_pool)
+
+      # —— DenseReranker 参数 —— 
+      embed_batch: 50        # A) 分批嵌入大小，避免超时
+
+  reasoning:
+    type: "app.modules.reasoning.flow:ReasoningAgentFlow"
+    kwargs: {}
+    impl: "app.modules.reasoning.impl_planner_synth:ReasoningAgentPlannerSynth"
+    impl_kwargs:
+      max_hops: 3
+      temperature: 0.6
+      n_drafts: 1
+      coverage_threshold: 0.2
+      refine_window: 2
+      max_expand: 4
+
+  verification:
+  type: "app.modules.verification.flow:VerifierAgentFlow"
+  kwargs: {}
+  impl: "app.modules.verification.impl_rules_llm:VerifierAgentRulesLLM"
+  impl_kwargs:
+    # === 规则相关 ===
+    require_citation_in_answer: false         # 替代原 rules.require_evidence
+    min_citations: 1                         # 至少引用条目数量
+    min_coverage_ratio: 0.2                  # 覆盖率阈值（原 min_coverage）
+
+    # === 打分权重 ===
+    weight_rules: 0.3                        # 规则分权重
+    weight_llm: 0.7                          # LLM 分权重
+    weight_risk: 0.0                         # 是否惩罚 hallucination（默认关闭）
+    decision_threshold: 0.6                  # pass 判定阈值
+
+    # === LLM 配置 ===
+    temperature: 0.0
+    ctx: 64000
+    use_llm: true                            # 保留旧参数以兼容（不会破坏）
+
+    # === 自洽性配置 ===
+    sc_runs: 5                               # LLM 多轮 fact-check 次数
+    sc_agreement_threshold: 0.7              # 多数派一致率阈值
+
+    # === Claim-Check 配置 ===
+    enable_claim_check: true                 # 是否开启 FEVER 风格 Claim-Check
+    max_claims: 5                            # 每次最多检查的事实数
+    # external_claim_retriever: "your.package:callable"  # 可选：提供 claim->evidence 的补检索回调
+
+# ========== Logging & Metrics ==========
+logging:
+  level: WARNING # ERROR/INFO
+  trace: true
+  save_dir: "logs/"
+
+metrics:
+  enable: true
+  output: "data/metrics.json"

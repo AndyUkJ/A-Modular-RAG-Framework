@@ -1,0 +1,34 @@
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489541.516344, "event": "run_start", "node": null, "status": "running", "payload": {"question": "Were Scott Derrickson and Ed Wood of the same nationality?", "mode": "full"}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489541.539692, "event": "node_start", "node": "InitExternal", "status": "running", "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489541.834843, "event": "node_end", "node": "InitExternal", "status": "ok", "duration_sec": 0.2951509952545166, "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489541.836844, "event": "node_start", "node": "Ingest", "status": "running", "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489541.837205, "event": "node_end", "node": "Ingest", "status": "ok", "duration_sec": 0.0003609657287597656, "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489541.838275, "event": "node_start", "node": "BuildGraph", "status": "running", "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489541.847494, "event": "node_start", "node": "GC/BuildNodes", "status": "running", "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489541.8503602, "event": "node_end", "node": "GC/BuildNodes", "status": "ok", "duration_sec": 0.0028662681579589844, "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489541.8513129, "event": "node_start", "node": "GC/BuildEdges", "status": "running", "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489541.893732, "event": "node_end", "node": "GC/BuildEdges", "status": "ok", "duration_sec": 0.0424191951751709, "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489541.895464, "event": "node_start", "node": "GC/AssembleSave", "status": "running", "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489541.98529, "event": "node_end", "node": "GC/AssembleSave", "status": "ok", "duration_sec": 0.08982610702514648, "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489541.988887, "event": "node_end", "node": "BuildGraph", "status": "ok", "duration_sec": 0.15061211585998535, "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489541.99037, "event": "node_start", "node": "ChooseRoute", "status": "running", "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489541.990598, "event": "node_end", "node": "ChooseRoute", "status": "ok", "duration_sec": 0.00022792816162109375, "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489541.992028, "event": "node_start", "node": "Retrieval", "status": "running", "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489541.992308, "event": "node_start", "node": "RetrievalAdapter/backend", "status": "running", "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489541.992654, "event": "node_start", "node": "Backend/Expand", "status": "running", "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489549.668788, "event": "llm_call", "node": null, "status": "ok", "payload": {"llm": {"provider": "openai", "model": "gpt-4o-mini", "tokens_in": 0, "tokens_out": 0, "latency_ms": 7675.620794296265, "cached": false, "temperature": 0.2, "max_tokens": null, "module": "RetrievalAgent", "purpose": "query_expand", "error": null, "request_id": null}}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489549.669259, "event": "node_end", "node": "Backend/Expand", "status": "ok", "duration_sec": 7.676604986190796, "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489549.669492, "event": "node_start", "node": "Backend/TextSearch", "status": "running", "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489549.8542368, "event": "node_end", "node": "Backend/TextSearch", "status": "ok", "duration_sec": 0.18474483489990234, "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489549.854551, "event": "node_start", "node": "Backend/GraphExpand", "status": "running", "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489549.859651, "event": "node_end", "node": "Backend/GraphExpand", "status": "ok", "duration_sec": 0.0051000118255615234, "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489549.859901, "event": "node_start", "node": "Backend/DenseRerank", "status": "running", "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489549.860248, "event": "node_end", "node": "Backend/DenseRerank", "status": "ok", "duration_sec": 0.000347137451171875, "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489549.861054, "event": "node_end", "node": "RetrievalAdapter/backend", "status": "ok", "duration_sec": 7.868746042251587, "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489549.861315, "event": "node_end", "node": "Retrieval", "status": "ok", "duration_sec": 7.869287014007568, "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489549.8623092, "event": "node_start", "node": "Reasoning", "status": "running", "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489549.862613, "event": "node_start", "node": "ReasoningAdapter", "status": "running", "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489549.86292, "event": "node_start", "node": "Reasoning/Plan", "status": "running", "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489556.945106, "event": "llm_call", "node": null, "status": "ok", "payload": {"llm": {"provider": "openai", "model": "gpt-4o-mini", "tokens_in": 0, "tokens_out": 0, "latency_ms": 7081.913948059082, "cached": false, "temperature": 0.2, "max_tokens": null, "module": "ReasoningAgent", "purpose": "plan", "error": null, "request_id": null}}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489556.9457438, "event": "node_end", "node": "Reasoning/Plan", "status": "ok", "duration_sec": 7.082823753356934, "payload": {}}
+{"trace_id": "trace-20250922-051901-2661a40d", "ts": 1758489556.9478452, "event": "node_start", "node": "Reasoning/Synthesize", "status": "running", "payload": {}}

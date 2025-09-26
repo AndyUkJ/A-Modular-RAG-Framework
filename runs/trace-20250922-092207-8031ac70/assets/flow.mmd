@@ -1,0 +1,42 @@
+flowchart TD
+  InitExternal["InitExternal"]
+  Ingest["Ingest"]
+  BuildGraph["BuildGraph"]
+  GC/BuildNodes["GC/BuildNodes"]
+  GC/BuildEdges["GC/BuildEdges"]
+  GC/AssembleSave["GC/AssembleSave"]
+  ChooseRoute["ChooseRoute"]
+  Retrieval["Retrieval"]
+  RetrievalAdapter/backend["RetrievalAdapter/backend"]
+  Backend/Expand["Backend/Expand"]
+  Backend/TextSearch["Backend/TextSearch"]
+  Backend/GraphExpand["Backend/GraphExpand"]
+  Backend/DenseRerank["Backend/DenseRerank"]
+  Reasoning["Reasoning"]
+  ReasoningAdapter["ReasoningAdapter"]
+  Reasoning/Plan["Reasoning/Plan"]
+  VerifierAdapter["VerifierAdapter"]
+  Verifier/Rules["Verifier/Rules"]
+  Verifier/LLM["Verifier/LLM"]
+  Verifier/ClaimCheck["Verifier/ClaimCheck"]
+  PackResult["PackResult"]
+  InitExternal --> Ingest
+  Ingest --> BuildGraph
+  BuildGraph --> GC/BuildNodes
+  GC/BuildNodes --> GC/BuildEdges
+  GC/BuildEdges --> GC/AssembleSave
+  GC/AssembleSave --> ChooseRoute
+  ChooseRoute --> Retrieval
+  Retrieval --> RetrievalAdapter/backend
+  RetrievalAdapter/backend --> Backend/Expand
+  Backend/Expand --> Backend/TextSearch
+  Backend/TextSearch --> Backend/GraphExpand
+  Backend/GraphExpand --> Backend/DenseRerank
+  Backend/DenseRerank --> Reasoning
+  Reasoning --> ReasoningAdapter
+  ReasoningAdapter --> Reasoning/Plan
+  Reasoning/Plan --> VerifierAdapter
+  VerifierAdapter --> Verifier/Rules
+  Verifier/Rules --> Verifier/LLM
+  Verifier/LLM --> Verifier/ClaimCheck
+  Verifier/ClaimCheck --> PackResult

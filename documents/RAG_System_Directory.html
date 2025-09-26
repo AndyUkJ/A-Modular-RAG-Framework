@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>RAG_System 代码目录结构（完整版）</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root { --bg:#fff; --fg:#111; --muted:#666; --code:#0b5394; --border:#e5e7eb; }
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,Apple Color Emoji,Segoe UI Emoji;}
+    .container{max-width:1060px;margin:0 auto;padding:40px 20px;}
+    h1{font-size:28px;margin:0 0 16px;}
+    h2{font-size:22px;margin:32px 0 8px;border-bottom:1px solid var(--border);padding-bottom:6px;}
+    p{margin:8px 0;}
+    .note{font-size:14px;color:var(--muted);}
+    .tree{background:#fafafa;border:1px solid var(--border);border-radius:10px;padding:18px;overflow:auto;}
+    .tree code{white-space:pre;}
+    .legend{margin:14px 0 0 0;padding-left:16px;color:var(--muted);}
+    .pill{display:inline-block;border:1px solid var(--border);padding:2px 8px;border-radius:999px;font-size:12px;margin-right:6px;background:#fff;}
+    .section{margin-top:28px;}
+    ul{margin:8px 0 8px 24px;}
+    li{margin:4px 0;}
+    .file{color:var(--code);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;}
+    .kbd{font-family:ui-monospace,Consolas,monospace;background:#f2f2f2;padding:0 6px;border-radius:4px;border:1px solid #e0e0e0;}
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>RAG_System 代码目录结构（完整版）</h1>
+    <p class="note">说明：本页为可直接保存的 HTML 概览，包含完整目录树与每个文件的职责注释。你可将其另存为 <span class="kbd">.html</span> 再转存为 Word。</p>
+
+    <div class="section">
+      <h2>目录树（不省略）</h2>
+      <div class="tree"><code>
+app/
+├─ core/
+│  ├─ dto.py                         # DTO 数据模型 (GraphBuildIn/Out, RetrievalIn/Out, ReasoningIn/Out, VerifyIn/Out, Hit)
+│  ├─ interfaces.py                  # 四大 Agent 接口协议
+│  ├─ llm_router.py                  # LLMRouter：封装 complete/embed，路由到 provider
+│  ├─ dataset_loader.py              # 数据集加载器 (HotpotQA JSON/JSONL，支持 index/count)
+│  └─ providers/                     # ✅ LLM Provider 子目录
+│     ├─ base.py                     # Provider 抽象类 (LLMProvider.complete/embed)
+│     ├─ openai_provider.py          # OpenAI Provider (支持 from_settings / Mock 回退)
+│     └─ ollama_provider.py          # Ollama Provider (本地 API，失败回退 Mock)
+├─ adapters/
+│  └─ graph_request_adapter.py       # Graph 请求适配器 (HotpotQA v1 → GraphRequestV2)
+├─ modules/
+│  ├─ graph_construction/
+│  │  ├─ flow.py                     # GraphConstructionFlow：Ingest → BuildNodes → BuildEdges → AssembleSave → Summarize
+│  │  ├─ node_builder.py             # NodeBuilder：构造 Question / Sentence / Document / Entity 节点
+│  │  ├─ edge_builder.py             # EdgeBuilder：构造 next_in_doc / q_match / in_doc / mentions / semantic_sim 边
+│  │  └─ impl_networkx.py            # GraphConstructionNetworkX：networkx 组装图并落盘 (graph.json/gexf/manifest)
+│  ├─ retrieval/
+│  │  ├─ flow.py                     # RetrievalAgentFlow：Expand(LLM) → BM25 → GraphExpand → RankSelect
+│  │  ├─ text_index.py               # BM25LiteIndex：轻量 BM25 (docs.jsonl)
+│  │  ├─ graph_utils.py              # Graph JSON 工具：build_index / expand_qmatch_neighbors
+│  │  ├─ retrieval_backend.py        # HybridRetrievalBackend：LLM QueryExpand + BM25 + GraphNeighbor 融合
+│  │  └─ retrieval_adapter.py        # RetrievalAdapter：统一输出 Hit(id, score, meta)
+│  ├─ reasoning/
+│  │  ├─ flow.py                     # ReasoningAgentFlow：LangGraph (Plan → Synthesize)
+│  │  └─ impl_planner_synth.py       # 简化 ReasoningAgent：plan + synth 两次 LLM
+│  └─ verification/
+│     ├─ flow.py                     # VerifierAgentFlow：规则检查 + LLM consistency → 聚合
+│     └─ impl_rules_llm.py           # VerifierAgentRulesLLM：LLM-only fact check
+├─ orchestrator/
+│  ├─ nodes.py                       # NodeContext + 各节点 (Ingest/BuildGraph/ChooseRoute/Retrieval/Reasoning/Verify/PackResult)
+│  ├─ state.py                       # WFState：工作流全局状态 (TypedDict)
+│  └─ workflow.py                    # build_workflow：组装 LangGraph DAG (含条件分支)
+├─ schemas/
+│  └─ graph_request_v2.py            # AssembleGraphRequestV2：Sentence / Inputs / Provenance
+├─ telemetry/
+│  └─ sinks.py                       # TelemetrySink & LocalJsonlSink (events.jsonl / run.json / flow.mmd)
+├─ di/
+│  └─ factory.py                     # ✅ 依赖注入工厂：构建 providers / router / modules
+└─ system.py                         # 系统入口：init_system + answer_question
+
+my_code/
+├─ ingest_hotpotqa.py                # HotpotQA → Graph + docs.jsonl 的数据预处理脚本
+└─ run_system.py                     # CLI：批量运行系统 (读取 config/settings.yaml 数据集配置)
+
+config/
+└─ settings.yaml                     # 系统配置 (providers, modules, dataset 等)
+
+runs/                                # Telemetry 输出 (自动生成)
+└─ &lt;trace_id&gt;/
+   ├─ events.jsonl                   # 节点执行事件
+   ├─ run.json                       # 最终结果快照
+   └─ assets/
+      └─ flow.mmd                    # Mermaid 执行轨迹图
+
+data/
+├─ hotpotqa/
+│  ├─ hotpot_dev_distractor_v1.json  # HotpotQA 原始数据
+│  └─ docs.jsonl                      # ingest_hotpotqa 生成的句子索引
+└─ graph/
+   └─ &lt;graph_id&gt;/
+      ├─ graph.json                  # 图 JSON
+      ├─ graph.gexf                  # networkx GEXF
+      └─ manifest.json               # 图文件清单 (含路径信息)
+      </code></div>
+      <p class="legend">
+        <span class="pill">说明</span>
+        以上结构已按你的要求落位：<span class="file">graph_request_adapter.py</span> → <b>app/adapters/</b>，
+        Provider 文件 → <b>app/core/providers/</b>，<span class="file">factory.py</span> → <b>app/di/</b>。
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>关键文件与职责</h2>
+      <ul>
+        <li><span class="file">app/core/dto.py</span>：全系统 DTO（Graph/Retrieval/Reasoning/Verify 输入输出、<code>Hit</code> 等）。</li>
+        <li><span class="file">app/core/interfaces.py</span>：<code>GraphConstruction</code> / <code>RetrievalAgent</code> / <code>ReasoningAgent</code> / <code>VerifierAgent</code> 接口。</li>
+        <li><span class="file">app/core/llm_router.py</span>：统一的 <code>complete</code> / <code>embed</code> 路由，埋点可观测。</li>
+        <li><span class="file">app/core/providers/</span>：Provider 抽象与具体实现（OpenAI / Ollama）。</li>
+        <li><span class="file">app/adapters/graph_request_adapter.py</span>：HotpotQA v1 → GraphRequestV2 适配。</li>
+        <li><span class="file">app/modules/graph_construction/*</span>：节点/边构建 + NetworkX 落盘。</li>
+        <li><span class="file">app/modules/retrieval/*</span>：BM25Lite + 图邻域扩展 + 后端融合 + 适配层。</li>
+        <li><span class="file">app/modules/reasoning/*</span>：两步式推理（Plan → Synthesize）。</li>
+        <li><span class="file">app/modules/verification/*</span>：规则 + LLM 一致性检查。</li>
+        <li><span class="file">app/orchestrator/*</span>：LangGraph 编排（条件路由、节点执行、结果打包）。</li>
+        <li><span class="file">app/telemetry/sinks.py</span>：本地 JSONL 事件、Mermaid 轨迹与延迟指标。</li>
+        <li><span class="file">app/di/factory.py</span>：从 <span class="file">config/settings.yaml</span> 装配 providers/router/modules。</li>
+        <li><span class="file">app/system.py</span>：系统入口：初始化、运行工作流、记录运行与产物。</li>
+        <li><span class="file">my_code/ingest_hotpotqa.py</span>：将 HotpotQA 转存为 Graph + docs.jsonl。</li>
+        <li><span class="file">my_code/run_system.py</span>：批量执行并保存结果。</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>使用提示</h2>
+      <ul>
+        <li>迁移后的 import 路径示例：
+          <ul>
+            <li>原：<code>from app.core.graph_request_adapter import ...</code></li>
+            <li>现：<code>from app.adapters.graph_request_adapter import ...</code></li>
+            <li>原：<code>from app.core.base import LLMProvider</code></li>
+            <li>现：<code>from app.core.providers.base import LLMProvider</code></li>
+          </ul>
+        </li>
+        <li>运行入口：<span class="file">my_code/run_system.py</span>（读取 <span class="file">config/settings.yaml</span>）。</li>
+        <li>运行产物输出到 <span class="file">runs/&lt;trace_id&gt;/</span>（事件 JSONL、结果快照、Mermaid 图）。</li>
+      </ul>
+    </div>
+  </main>
+</body>
+</html>

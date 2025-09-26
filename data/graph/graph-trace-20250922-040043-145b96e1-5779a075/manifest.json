@@ -1,0 +1,11 @@
+{
+  "graph_id": "graph-trace-20250922-040043-145b96e1-5779a075",
+  "node_count": 165,
+  "edge_count": 1160,
+  "paths": {
+    "dir": "data/graph/graph-trace-20250922-040043-145b96e1-5779a075",
+    "gexf": "data/graph/graph-trace-20250922-040043-145b96e1-5779a075/graph.gexf",
+    "json": "data/graph/graph-trace-20250922-040043-145b96e1-5779a075/graph.json",
+    "manifest": "data/graph/graph-trace-20250922-040043-145b96e1-5779a075/manifest.json"
+  }
+}
